@@ -1,7 +1,12 @@
 package com.example.praktika.controller;
 
+import com.example.praktika.entity.SummaryEntity;
+import com.example.praktika.response.BaseResponse;
+import com.example.praktika.response.DataResponse;
+import com.example.praktika.response.ListResponse;
 import com.example.praktika.service.SummaryService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,19 +28,6 @@ public class SummaryController {
                 new ListResponse<SummaryEntity>(true, "Список резюме", service.findAll()));
     }
 
-    @GetMapping
-    @Operation(
-            summary = "Поиск резюме по id"
-    )
-    public ResponseEntity<BaseResponse> by_id(@RequestParam Long id) {
-        try {
-            return ResponseEntity.ok(
-                    new DataResponse<SummaryEntity>(true, "Найдено следующее резюме", service.findById(id).orElseThrow()));
-        } catch (RuntimeException e) {
-            return ResponseEntity.ok(new BaseResponse(false, e.getMessage()));
-        }
-    }
-
     @PostMapping
     @Operation(
             summary = "Добавить резюме"
@@ -43,13 +35,13 @@ public class SummaryController {
     public ResponseEntity<BaseResponse> save(@RequestBody SummaryEntity summary) {
         try {
             return ResponseEntity.ok(
-                    new DataResponse<SummaryEntity>(true, "резюме сохранено", service.save(summary)));
+                    new DataResponse<SummaryEntity>(true, "Резюме сохранено", service.save(summary)));
         } catch (RuntimeException e) {
             return ResponseEntity.ok(new BaseResponse(false, e.getMessage()));
         }
     }
 
-    @PutMapping
+    @PutMapping("/update")
     @Operation(
             summary = "Обновить резюме"
     )
@@ -57,20 +49,34 @@ public class SummaryController {
         try {
             service.update(summary);
             return ResponseEntity.ok(
-                    new BaseResponse(true, "резюме сохраненоыы"));
+                    new BaseResponse(true, "Резюме сохранено"));
         } catch (RuntimeException e) {
             return ResponseEntity.ok(new BaseResponse(false, e.getMessage()));
         }
     }
-
-    @DeleteMapping("/{id}")
+    @GetMapping("/search")
     @Operation(
-            summary = "Удалить вакансию"
+            summary = "Поиск резюме по названию вида деятельности"
     )
-    public ResponseEntity<BaseResponse> delete(@PathVariable Long id) {
-
+    public ResponseEntity <BaseResponse> search(@RequestParam String activities){
+        return ResponseEntity.ok(
+                new ListResponse<SummaryEntity>(true, "резюме", service.findByActivities(activities)));
+    }
+    @GetMapping("/search3")
+    @Operation(
+            summary = "Поиск резюме пользователя с определенными навыками"
+    )
+    public ResponseEntity <BaseResponse> search3(@RequestParam String skills){
+        return ResponseEntity.ok(
+                new ListResponse<SummaryEntity>(true, "резюме", service.findBySkills(skills)));
+    }
+    @DeleteMapping("/delete")
+    @Operation(
+            summary = "Удалить резюме"
+    )
+    public ResponseEntity<BaseResponse> delete(@RequestParam Long id) {
         service.delete(id);
-        return ResponseEntity.ok(new BaseResponse(true, "Вакансия удалена"));
-
+        return ResponseEntity.ok(
+                new BaseResponse(true, "Резюме удалено"));
     }
 }

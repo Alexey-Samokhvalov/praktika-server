@@ -17,33 +17,47 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Summary")
+@Table(name = "summary")
 public class SummaryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Идентификатор", example = "A-124523")
     private Long id;
     @NotBlank()
-    @Pattern(regexp = "[А-Я][а-я]{1,20}")
-    @Schema(description = "Фамилия", example = "Виаичм")
-    private String lastname;
+    @Pattern(regexp = "[А-Я\sа-я]{1,100}")
+    @Schema(description = "Фамилия Имя Отчество", example = "Виаичм Авуаыуа Ваыааы")
+    private String lns;
     @NotBlank()
-    @Pattern(regexp = "[А-Я][а-я]{1,20}")
-    @Schema(description = "Имя", example = "Аипеа")
-    private String name;
-    @NotBlank()
-    @Pattern(regexp = "[А-Я][а-я]{1,20}")
-    @Schema(description = "Отчество", example = "Итпттп")
-    private String surname;
-    @NotBlank()
-    @Pattern(regexp = "[{1,20}]")
+    @Pattern(regexp = "[1-9.]{1,20}")
     @Schema(description = "Дата рождения", example = "21412441")
     private String birthday;
     @NotBlank()
-    @Pattern(regexp = "[А-Я][а-я]{1,40}")
-    @Schema(description = "Деятельность", example = "Итпттп")
+    @Pattern(regexp = "[А-Я\sа-я]{1,40}")
+    @Schema(description = "Название сферы деятельности", example = "Итпттп")
     private String activities;
-    @JsonIgnore
-    @OneToMany(mappedBy = "summary", cascade = CascadeType.ALL)
-    private List<SummaryEntity> summary;
+    @NotBlank()
+    @Pattern(regexp = "[А-Я\sа-я1-9]{1,40}")
+    @Schema(description = "Опыт работы", example = "Итпттп")
+    private String experience;
+    @NotBlank()
+    @Pattern(regexp = "[А-Я\sа-я]{1,40}")
+    @Schema(description = "Образование", example = "Итпттп")
+    private String education;
+    @NotBlank()
+    @Pattern(regexp = "[А-Я\sа-я,]{1,80}")
+    @Schema(description = "Навыки", example = "Итпттп")
+    private String skills;
+    @NotBlank()
+    @Pattern(regexp = "[1-9]{1,40}")
+    @Schema(description = "Контакты", example = "Итпттп")
+    private String contacts;
+    @NotBlank()
+    @Pattern(regexp = "[А-Я\sа-я]{1,100}")
+    @Schema(description = "Описание", example = "Итпттп")
+    private String description;
+    @ManyToOne
+    @JoinColumn(name = "users")
+    @Schema(description = "id пользователя", example = "A-124523")
+    private UsersEntity users;
+
 }
